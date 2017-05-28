@@ -65,7 +65,7 @@ def main():
     # Loop over all commits and check the diffs
     error_count = 0
     for icommit in xrange(len(commits) - 1):
-        print 'Checking whitespace in %s %s' % commits[icommit]
+        print('Checking whitespace in %s %s' % commits[icommit])
         command = ['git', '-c', 'core.whitespace=tab-in-indent', 'diff',
                    commits[icommit + 1][0], commits[icommit][0], '--check']
         proc = subprocess.Popen(command)

@@ -18,13 +18,11 @@ get_ancestor  # Writes $ANCESTOR_SHA variable.
 echo "--- Basic source tests"
 ${BASH_SOURCE%/*}/check_names.py
 
-echo "--- Build Cython files & HORTON"
 ./cleanfiles.sh
-CC="ccache gcc" ./setup.py build_ext -i
 
 echo "--- Packing build"
-find horton -name "*.so" -o -name "*.pyc" | tar -zcvf horton_pr.tar.gz -T -
-buildkite-agent artifact upload horton_pr.tar.gz
+find calcdb -name "*.so" -o -name "*.pyc" | tar -zcvf calcdb_pr.tar.gz -T -
+buildkite-agent artifact upload calcdb_pr.tar.gz
 
 ## Don't touch this code if you don't understand it ##
 if [ "$BUILDKITE_PULL_REQUEST" != "false" ]; then
@@ -32,13 +30,11 @@ if [ "$BUILDKITE_PULL_REQUEST" != "false" ]; then
     git checkout ${ANCESTOR_SHA}
 ## END ##
 
-    echo "--- Build Cython files & HORTON [Ancestor]"
     ./cleanfiles.sh
-    CC="ccache gcc" ./setup.py build_ext -i
 
     echo "--- Packing build [Ancestor]"
-    find horton -name "*.so" -o -name "*.pyc" | tar -zcvf horton_ancestor.tar.gz -T -
-    buildkite-agent artifact upload horton_ancestor.tar.gz
+    find calcdb -name "*.so" -o -name "*.pyc" | tar -zcvf calcdb_ancestor.tar.gz -T -
+    buildkite-agent artifact upload calcdb_ancestor.tar.gz
 
 ## Don't touch this code if you don't understand it ##
 fi

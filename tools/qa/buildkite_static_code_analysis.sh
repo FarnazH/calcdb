@@ -13,8 +13,6 @@ if [ "$BUILDKITE_PULL_REQUEST" != "false" ]; then
     rm -rf ${QAWORKDIR}/*.pp
 
     TRAPDOORS="trapdoor_cppcheck.py
-    trapdoor_cpplint.py
-    trapdoor_doxygen.py
     trapdoor_import.py
     trapdoor_pycodestyle.py
     trapdoor_pydocstyle.py"

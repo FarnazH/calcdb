@@ -27,19 +27,7 @@ pip install --no-index --upgrade pydocstyle
 pip wheel GitPython
 pip install --no-index --upgrade GitPython
 
-# Packages for HORTON
-pip wheel numpy
-pip install --no-index --upgrade numpy
-pip wheel scipy
-pip install --no-index --upgrade scipy
-pip wheel matplotlib
-pip install --no-index --upgrade matplotlib
-pip wheel cython
-pip install --no-index --upgrade cython
-pip wheel h5py
-pip install --no-index --upgrade h5py
-
-# Packages for HORTON documentation
+# Packages for calcdb documentation
 pip wheel sphinx
 pip install --no-index --upgrade sphinx
 pip wheel sphinx_rtd_theme
