@@ -21,12 +21,12 @@ if [[ `git diff --cached --check` ]]; then
     exit 1
 fi
 
-# Check for untracked files (not in .gitignore)
-if [[ `git status -u ${CODE_DIRS} -s | grep "^??"` ]]; then
-    echo -e "${red}Commit failed: untracked files (not in .gitignore).${color_end}"
-    git status -u ${CODE_DIRS} -s | grep "^??"
-    exit 1
-fi
+## Check for untracked files (not in .gitignore)
+#if [[ `git status -u ${CODE_DIRS} -s | grep "^??"` ]]; then
+#    echo -e "${red}Commit failed: untracked files (not in .gitignore).${color_end}"
+#    git status -u ${CODE_DIRS} -s | grep "^??"
+#    exit 1
+#fi
 
 # Check for new print statements
 if [[ `git diff --cached | grep '^+' | sed  's/^.//' | sed 's:#.*$::g' | grep 'print '` ]]; then
