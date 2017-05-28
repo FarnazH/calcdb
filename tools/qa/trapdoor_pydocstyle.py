@@ -64,7 +64,7 @@ class PyDocStyleTrapdoorProgram(TrapdoorProgram):
         # Get version
         command = ['pydocstyle', '--version']
         version = run_command(command, verbose=False)[0].strip()
-        print 'USING              : pydocstyle', version
+        print('USING              : pydocstyle', version)
 
         default_match = '({0})'.format(config['default_match'])
         output = ''

@@ -33,7 +33,7 @@ def clean_code(fn):
        fn
            The file to be cleaned.
     """
-    print 'Cleaning'.upper(), fn
+    print('Cleaning'.upper(), fn)
 
     # read lines
     with open(fn) as f:

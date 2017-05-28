@@ -66,7 +66,7 @@ class PyCodeStyleTrapdoorProgram(TrapdoorProgram):
                    All errors encountered in the current branch.
         """
         # Get version
-        print 'USING PYCODESTYLE  :', pycodestyle.__version__
+        print('USING PYCODESTYLE  :', pycodestyle.__version__)
 
         qatooldir = os.path.dirname(os.path.abspath(__file__))
         exclude_directories = []
@@ -80,11 +80,11 @@ class PyCodeStyleTrapdoorProgram(TrapdoorProgram):
             # Call pycodestyle with custom config file
             styleguide = pycodestyle.StyleGuide(reporter=CompleteReport, config_file=config_file)
             styleguide.options.exclude.extend(config['py_exclude'])
-            print 'EXCLUDED FILES     :', styleguide.options.exclude
-            print 'IGNORED MESSAGES   :', styleguide.options.ignore
-            print 'MAX LINE LENGTH    :', styleguide.options.max_line_length
+            print('EXCLUDED FILES     :', styleguide.options.exclude)
+            print('IGNORED MESSAGES   :', styleguide.options.ignore)
+            print('MAX LINE LENGTH    :', styleguide.options.max_line_length)
             for py_directory in custom_config['directories']:
-                print 'RUNNING            : pycodestyle %s (through Python API)' % py_directory
+                print('RUNNING            : pycodestyle %s (through Python API)' % py_directory)
                 styleguide.input_dir(py_directory)
             exclude_directories += [os.path.abspath(i) for i in custom_config['directories']]
         # copy over configfile
@@ -97,11 +97,11 @@ class PyCodeStyleTrapdoorProgram(TrapdoorProgram):
                                             config_file=default_config_file)
         styleguide.options.exclude.extend(config['py_exclude'])
         styleguide.options.exclude.extend(exclude_directories)
-        print 'EXCLUDED FILES     :', styleguide.options.exclude
-        print 'IGNORED MESSAGES   :', styleguide.options.ignore
-        print 'MAX LINE LENGTH    :', styleguide.options.max_line_length
+        print('EXCLUDED FILES     :', styleguide.options.exclude)
+        print('IGNORED MESSAGES   :', styleguide.options.ignore)
+        print('MAX LINE LENGTH    :', styleguide.options.max_line_length)
         for py_directory in config['py_directories']:
-            print 'RUNNING            : pycodestyle %s (through Python API)' % py_directory
+            print('RUNNING            : pycodestyle %s (through Python API)' % py_directory)
             styleguide.input_dir(py_directory)
 
         # Parse the output of PyCodeStyle into standard return values

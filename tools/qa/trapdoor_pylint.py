@@ -76,7 +76,7 @@ class PylintTrapdoorProgram(TrapdoorProgram):
         # get Pylint version
         command = ['pylint', '--version', '--rcfile={0}'.format(default_rc_file)]
         version_info = ''.join(run_command(command, verbose=False)[0].split('\n')[:2])
-        print 'USING              :', version_info
+        print('USING              :', version_info)
 
         # Collect python files (pylint ignore is quite bad.. need to ignore manually)
         py_extra = get_source_filenames(config, 'py', unpackaged_only=True)
@@ -149,7 +149,7 @@ class PylintTrapdoorProgram(TrapdoorProgram):
         # parse the output of Pylint into standard return values
         lines = output.split('\n')[:-1]
         score = lines[-2].split()[6]
-        print 'SCORE              :', score
+        print('SCORE              :', score)
         counter = Counter()
         messages = set([])
         for line in lines:
