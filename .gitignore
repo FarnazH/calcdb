@@ -46,3 +46,6 @@ setup.cfg
 # Ignore testing output
 .coverage
 qaworkdir
+
+# Ignore log file
+*.log

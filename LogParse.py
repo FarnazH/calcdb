@@ -1,6 +1,6 @@
 import re
 import json
-def parseFlags(string,startFlag,endFlag,reFlags=0):
+def parseFlags(string,startFlag,endFlag,reFlags=re.S):
     Pattern = r"{}(.*?){}".format(startFlag, endFlag)
     return re.search(Pattern,string,flags=reFlags).group(1)
 
@@ -93,11 +93,11 @@ def multiEquivLine(string):
 def raw(Input):
     return Input
 
-def mainParse(string,startFlag,Endflag,reFlags=0, parseType=raw):
+def mainParse(string,startFlag,Endflag,reFlags=re.S, parseType=raw):
     rawParse = parseFlags(string,startFlag,Endflag,reFlags)
     return parseType(rawParse)
 
-def dictParse(title,string,startFlag,Endflag,reFlags=0, parseType=raw):
+def dictParse(title,string,startFlag,Endflag,reFlags=re.S, parseType=raw):
     rawParse = parseFlags(string,startFlag,Endflag,reFlags)
     MainDict[title] = parseType(rawParse)
 
@@ -111,53 +111,52 @@ with open(filename, "r") as File:
 
 #####Pull Out Values#####
 
-#TODO: Put in loop
-
 ###PopulationAnalysis###
 
-PopulationRaw = parseFlags(RawFile,"Population analysis using the SCF density","Leave Link  601",reFlags=re.DOTALL)
+PopulationRaw = parseFlags(RawFile,"Population analysis using the SCF density","Leave Link  601")
 
-dictParse('ElectronicState',PopulationRaw,"The electronic state is","\.")
+ArgumentList = [
+#Population Analysis
+['ElectronicState',          PopulationRaw,"The electronic state is","\."],
+['OccupiedEigenvalues',      PopulationRaw,"Alpha  occ. eigenvalues --","Alpha virt. eigenvalues --",dict(parseType=cleanList)],
+['VirtualEigenvalues ',      PopulationRaw,"Alpha virt. eigenvalues --","Condensed",dict(parseType=cleanList)],
+['CondensedAtoms',           PopulationRaw,"Condensed to atoms \(all electrons\):","Mulliken charges:",dict(parseType=parseTable)],
+['MullikenCharges',          PopulationRaw,"Mulliken charges:","Sum of Mulliken charges =",dict(parseType=parseTable)],
+['MullikenChargesSum',       PopulationRaw,"Sum of Mulliken charges =","\n"],
+['DipoleMoment',             PopulationRaw,"Dipole moment[^\n]*:","Quadrupole moment",dict(parseType=multiEquivLine)],
+['QuadrupoleMoment',         PopulationRaw,"Quadrupole moment[^\n]*:","Traceless Quadrupole",dict(parseType=multiEquivLine)],
+['TracelessQuadrupoleMoment',PopulationRaw,"Traceless Quadrupole moment[^\n]*:","Octapole moment",dict(parseType=multiEquivLine)],
+['OctapoleMoment',           PopulationRaw,"Octapole moment[^\n]*:","Hexadecapole moment",dict(parseType=multiEquivLine)],
+['HexadecapoleMoment',       PopulationRaw,"Hexadecapole moment[^\n]*:","N-N",dict(parseType=multiEquivLine)],
+['N-N',                      PopulationRaw,r'.(?=N-N)','Symmetry',dict(parseType=multiEquivLine)],
+#Energy
+['E(RHF)',RawFile,"SCF Done:  E\(RHF\) =\s*","\sA.*cycles",dict(reFlags=0)],
+["SCF_Other",RawFile,"after.*cycles","Leave Link  502",dict(parseType=multiEquivLine)],
+###OptimizedStructure###
+###Frequency###
+]
 
+for item in ArgumentList:
+    args=[]
+    kwargs={}
+    for sub in item:
+        if type(sub) == dict:
+            kwargs = sub
+        else:
+            args.append(sub)
+    dictParse(*args,**kwargs)
 
-dictParse('OccupiedEigenvalues',PopulationRaw,"Alpha  occ. eigenvalues --","Alpha virt. eigenvalues --",reFlags=re.S,parseType=cleanList)
-
-dictParse('VirtualEigenvalues ',PopulationRaw,"Alpha virt. eigenvalues --","Condensed",reFlags=re.S,parseType=cleanList)
-
-dictParse('CondensedAtoms', PopulationRaw,"Condensed to atoms \(all electrons\):","Mulliken charges:",reFlags=re.S,parseType=parseTable)
-
-dictParse('MullikenCharges',PopulationRaw,"Mulliken charges:","Sum of Mulliken charges =",reFlags=re.S, parseType=parseTable)
-
-dictParse('MullikenChargesSum',PopulationRaw,"Sum of Mulliken charges =","\n")
-
-MainDict['ElectronicSpatialExtent'] = equivLine(PopulationRaw,"Electronic spatial extent")
-
-MainDict['Charge'] = equivLine(PopulationRaw,"Charge")
-
-dictParse('DipoleMoment',PopulationRaw,"Dipole moment[^\n]*:","Quadrupole moment",reFlags=re.S,parseType=multiEquivLine)
-
-dictParse('QuadrupoleMoment',PopulationRaw,"Quadrupole moment[^\n]*:","Traceless Quadrupole",reFlags=re.S,parseType=multiEquivLine)
-
-dictParse('TracelessQuadrupoleMoment',PopulationRaw,"Traceless Quadrupole moment[^\n]*:","Octapole moment",reFlags=re.S,parseType=multiEquivLine)
-
-dictParse('OctapoleMoment',PopulationRaw,"Octapole moment[^\n]*:","Hexadecapole moment",reFlags=re.S,parseType=multiEquivLine)
-
-dictParse('HexadecapoleMoment',PopulationRaw,"Hexadecapole moment[^\n]*:","N-N",reFlags=re.S,parseType=multiEquivLine)
-
-dictParse('N-N',PopulationRaw,r'.(?=N-N)','Symmetry',reFlags=re.S,parseType=multiEquivLine)
-
+#SymmetryEnergies have a unique format
 symdict = {}
 for symmetry in ['AG','B1G','B2G','B3G']:
     symdict['{}'.format(symmetry)]= equivLine(PopulationRaw,'{}'.format(symmetry))
-
 MainDict['SymmetryEnergy']=symdict
 
-###Energy###
-dictParse('E(RHF)',RawFile,"SCF Done:  E\(RHF\) =\s*","\sA.*cycles")
-dictParse("SCF_Other",RawFile,"after.*cycles","Leave Link  502",reFlags=re.S,parseType=multiEquivLine)
-
-
-###OptimizedStructure###
-###Frequency###
+#Basic single line info, should incorporate into main list
+MainDict['ElectronicSpatialExtent'] = equivLine(PopulationRaw,"Electronic spatial extent")
+MainDict['Charge'] = equivLine(PopulationRaw,"Charge")
 
 print(json.dumps(MainDict,indent=4))
+
+with open("parsed.json",'w') as File:
+    json.dump(MainDict,File, indent=4)
