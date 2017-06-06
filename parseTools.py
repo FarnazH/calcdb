@@ -1,4 +1,5 @@
 import re
+import numpy
 
 def parseFlags(string,startFlag,endFlag,reFlags=re.S):
     Pattern = r"{}(.*?){}".format(startFlag, endFlag)
@@ -11,7 +12,7 @@ def cleanList(string):
         cleanList.append(item.strip())
     return cleanList
 
-def parseTable(string):
+def parseArray(string):
     lines = string.split("\n")
     #remove empty lines
     for idx,line in enumerate(lines):
@@ -26,8 +27,6 @@ def parseTable(string):
         if idx == 0:
             titleWhitespace = whitespace
             ArrayIndex = cleanList(line)
-           # for idx,item in enumerate(ArrayIndex):
-           #     ArrayIndex[idx]=int(item)
             ArrayItemNumber = len(line.split())
         elif whitespace == titleWhitespace:
             ArrayIndex = line.split()
@@ -89,6 +88,19 @@ def multiEquivLine(string):
     for idx,key in enumerate(keyList):
         Dict[key] = valueList[idx]
     return Dict
+
+def parseTable(string):
+    subDict={}
+    string = re.split('[-]+\n',string)[-2]
+    rows = string.split('\n')[0:-1]
+    titles = ['CenterNumber','AtomicNumber','AtomicType','X','Y','Z']
+    for ridx,row in enumerate(rows):
+        items = row.split()
+        subDict['Row{}'.format(ridx)]={}
+        for tidx,title in enumerate(titles):
+            subDict['Row{}'.format(ridx)][title]=items[tidx]
+    return subDict
+
 
 def raw(Input):
     return Input

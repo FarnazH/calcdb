@@ -16,8 +16,8 @@ ArgumentList = [
 ['ElectronicState',          PopulationRaw,"The electronic state is","\."],
 ['OccupiedEigenvalues',      PopulationRaw,"Alpha  occ. eigenvalues --","Alpha virt. eigenvalues --",dict(parseType=pt.cleanList)],
 ['VirtualEigenvalues ',      PopulationRaw,"Alpha virt. eigenvalues --","Condensed",dict(parseType=pt.cleanList)],
-['CondensedAtoms',           PopulationRaw,"Condensed to atoms \(all electrons\):","Mulliken charges:",dict(parseType=pt.parseTable)],
-['MullikenCharges',          PopulationRaw,"Mulliken charges:","Sum of Mulliken charges =",dict(parseType=pt.parseTable)],
+['CondensedAtoms',           PopulationRaw,"Condensed to atoms \(all electrons\):","Mulliken charges:",dict(parseType=pt.parseArray)],
+['MullikenCharges',          PopulationRaw,"Mulliken charges:","Sum of Mulliken charges =",dict(parseType=pt.parseArray)],
 ['MullikenChargesSum',       PopulationRaw,"Sum of Mulliken charges =","\n"],
 ['DipoleMoment',             PopulationRaw,"Dipole moment[^\n]*:","Quadrupole moment",dict(parseType=pt.multiEquivLine)],
 ['QuadrupoleMoment',         PopulationRaw,"Quadrupole moment[^\n]*:","Traceless Quadrupole",dict(parseType=pt.multiEquivLine)],
@@ -57,3 +57,8 @@ MainDict['Charge'] = pt.equivLine(PopulationRaw,"Charge")
 
 with open("parsed.json",'w') as File:
     json.dump(MainDict,File, indent=4)
+
+
+print(pt.mainParse(RawFile,'Stoichiometry','(?=\n)',reFlags=0))
+
+
