@@ -5,11 +5,23 @@ def parseFlags(string,startFlag,endFlag,reFlags=re.S):
     Pattern = r"{}(.*?){}".format(startFlag, endFlag)
     return re.search(Pattern,string,flags=reFlags).group(1)
 
+def cleanItem(string):
+    string = string.strip()
+    intpattern = r'^-?\d+$'
+    floatpattern = r'^(-?\d+(\.\d+)?).(\d\d)$'
+    if re.match(intpattern,string):
+        return int(string)
+    elif re.match(floatpattern,string):
+        match = re.match(floatpattern,string)
+        return float(match.group(1))*10**(int(match.group(3)))
+    else:
+        return string
+
 def cleanList(string):
     stringList = string.split()
     cleanList = []
     for item in stringList:
-        cleanList.append(item.strip())
+        cleanList.append(cleanItem(item))
     return cleanList
 
 def parseArray(string):
@@ -93,7 +105,7 @@ def parseTable(string):
     subDict={}
     string = re.split('[-]+\n',string)[-2]
     rows = string.split('\n')[0:-1]
-    titles = ['CenterNumber','AtomicNumber','AtomicType','X','Y','Z']
+    titles = ['Center_Number','Atomic_Number','Atomic_Type','X','Y','Z']
     for ridx,row in enumerate(rows):
         items = row.split()
         subDict['Row{}'.format(ridx)]={}
