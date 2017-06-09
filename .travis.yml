@@ -35,7 +35,7 @@ install:
   - conda update -q conda
   # Useful for debugging any issues with conda
   - conda info -a
-  - deps='numpy scipy sphinx nose coverage'
+  - deps='numpy scipy pytables sphinx nose coverage'
   - conda create -p $HOME/py --yes -c pyqc $deps "python=$TRAVIS_PYTHON_VERSION"
   - conda install -p $HOME/py -c conda-forge pycodestyle pydocstyle pylint gitpython
   - source activate $HOME/py
